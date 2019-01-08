@@ -31,6 +31,8 @@ shared_module(
     'src/Widgets/Scale.vala',
     'src/Widgets/MprisGui.vala',
     'src/Widgets/MprisWidget.vala',
+    'src/Widgets/DeviceRow.vala',
+    'src/Widgets/OutputPanel.vala',
     'src/Services/MprisClient.vala',
     'src/Services/Settings.vala',
     'src/Services/Volume-control.vala',
@@ -38,6 +40,7 @@ shared_module(
     'src/Services/Adapter.vala',
     'src/Services/Device.vala',
     'src/Services/MediaPlayer.vala',
+    'src/Services/PulseAudioManager.vala',
     asresources,
     dependencies: [
         dependency('glib-2.0'),
@@ -49,6 +52,7 @@ shared_module(
         dependency('libnotify'),
         dependency('libcanberra'),
         dependency('libcanberra-gtk3'),
+        meson.get_compiler('vala').find_library('libpulse-ext', dirs: join_paths(meson.source_root(), 'vapi')),
         wingpanel_dep
     ],
     install: true,

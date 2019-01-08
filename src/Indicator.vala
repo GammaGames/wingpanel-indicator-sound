@@ -39,7 +39,7 @@ public class Sound.Indicator : Wingpanel.Indicator {
     public Indicator () {
         Object (code_name: Wingpanel.Indicator.SOUND,
                 display_name: _("Indicator Sound"),
-                description: _("The sound indicator"));        
+                description: _("The sound indicator"));
     }
 
     construct {
@@ -59,7 +59,7 @@ public class Sound.Indicator : Wingpanel.Indicator {
 
         settings = new Services.Settings ();
         settings.notify["max-volume"].connect (set_max_volume);
-    
+
         var locale = Intl.setlocale (LocaleCategory.MESSAGES, null);
 
         display_widget.button_press_event.connect ((e) => {
@@ -249,6 +249,8 @@ public class Sound.Indicator : Wingpanel.Indicator {
             main_grid = new Gtk.Grid ();
 
             var mpris = new Widgets.MprisWidget ();
+            var pam = PulseAudioManager.get_default ();
+            pam.start();
 
             mpris.close.connect (() => {
                 close ();
@@ -311,6 +313,10 @@ public class Sound.Indicator : Wingpanel.Indicator {
 
             main_grid.attach (new Wingpanel.Widgets.Separator (), 0, position++, 1, 1);
 
+            var output_panel = new Sound.OutputPanel();
+            main_grid.attach (output_panel, 0, position++, 1, 1);
+            main_grid.attach (new Wingpanel.Widgets.Separator (), 0, position++, 1, 1);
+
             mic_scale.margin_start = 6;
             mic_scale.active = !volume_control.micMute;
             mic_scale.notify["active"].connect (on_mic_switch_change);
@@ -326,6 +332,10 @@ public class Sound.Indicator : Wingpanel.Indicator {
             update_mic_visibility ();
 
             main_grid.attach (mic_separator, 0, position++, 1, 1);
+
+            output_panel.device_changed.connect(() => {
+                on_volume_change();
+            });
 
             settings_button = new Gtk.ModelButton ();
             settings_button.text = _("Sound Settings…");
